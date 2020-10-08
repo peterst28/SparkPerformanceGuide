@@ -57,7 +57,7 @@ Too many shuffle partitions:
 
 I had a customer with a 3.5 TB table that needed to be joined with about a dozen fact tables in one SQL statement.  Our initial thought was that we should set the shuffle partitions to 40,000 in order to get a reasonable partitions size.  However, when we ran the job we found that the CPU on the driver was maxed out, and the workers were practically idle.  The job never finished, slowing down as the job progressed until it stopped making progress and we saw FetchFailedException errors in the logs.  After about 6 hours and little progress, we killed the job.  On investigation, we realized we were generating 1.6 billion shuffle blocks (40,000 x 40,000) for each join!  This completely swamped the driver.  We reduced the number of shuffle partitions to 3,000, and the job completed in under 3 hours.
 
-#### Delta Caching
+## Delta Caching
 
 Databricks only!  This is only compatible with the i3-series of VMs on AWS and Ls-series on Azure.  On these VM types, Delta caching is on by default.
 
