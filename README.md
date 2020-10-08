@@ -56,3 +56,20 @@ The number of shuffle blocks can get very large very quickly.  The formula is:
 Too many shuffle partitions:
 
 I had a customer with a 3.5 TB table that needed to be joined with about a dozen fact tables in one SQL statement.  Our initial thought was that we should set the shuffle partitions to 40,000 in order to get a reasonable partitions size.  However, when we ran the job we found that the CPU on the driver was maxed out, and the workers were practically idle.  The job never finished, slowing down as the job progressed until it stopped making progress and we saw FetchFailedException errors in the logs.  After about 6 hours and little progress, we killed the job.  On investigation, we realized we were generating 1.6 billion shuffle blocks (40,000 x 40,000) for each join!  This completely swamped the driver.  We reduced the number of shuffle partitions to 3,000, and the job completed in under 3 hours.
+
+#### Delta Caching
+
+Databricks only!
+
+#### How to configure
+
+This is only compatible with the i3-series of VMs on AWS and Ls-series on Azure.
+
+In SQL:
+```sql
+SET spark.databricks.io.cache.enabled = true/false
+```
+
+#### Summary
+
+Delta caching makes use of fast SSD drives on the workers to cache Delta tables that have been recently queried.  Only Delta tables are cached, not results, so if many operations are performed and the results queried repeatedly, the operations will be re-performed on each query.  To improve performance, save the results to a Delta table and query from the results table.  The results will then be cached and performant.
