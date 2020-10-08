@@ -59,11 +59,9 @@ I had a customer with a 3.5 TB table that needed to be joined with about a dozen
 
 #### Delta Caching
 
-Databricks only!
+Databricks only!  This is only compatible with the i3-series of VMs on AWS and Ls-series on Azure.  On these VM types, Delta caching is on by default.
 
 #### How to configure
-
-This is only compatible with the i3-series of VMs on AWS and Ls-series on Azure.
 
 In SQL:
 ```sql
